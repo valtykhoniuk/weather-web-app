@@ -36,11 +36,17 @@ export default {
       }
       this.error = "";
 
-      axios.get(
-        `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&appid=9aa75d5e7ba78ba2e3fa668d6e97cf82`.then(
-          (res) => (this.info = res.data)
+      axios
+        .get(
+          `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&appid=9aa75d5e7ba78ba2e3fa668d6e97cf82&units=metric`
         )
-      );
+        .then((res) => {
+          this.info = res.data;
+        })
+        .catch((err) => {
+          this.error = "City not found";
+          this.info = null;
+        });
     },
   },
 };
