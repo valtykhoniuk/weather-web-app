@@ -1,8 +1,12 @@
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
       city: "",
+      error: "",
+      info: null,
     };
   },
 
@@ -10,11 +14,39 @@ export default {
     cityName() {
       return "«" + this.city + "»";
     },
+    showTemp() {
+      return "Temperature: " + this.info.main.temp;
+    },
+    showFeelsLike() {
+      return "Feels like: " + this.info.main.feels_like;
+    },
+    showMinTemp() {
+      return "Minimal temperature: " + this.info.main.temp_min;
+    },
+    showMaxTemp() {
+      return "Maximal temperature: " + this.info.main.temp_max;
+    },
+  },
+
+  methods: {
+    getWeather() {
+      if (this.city.trim().length < 2) {
+        this.error = "The name is too short";
+        return false;
+      }
+      this.error = "";
+
+      axios.get(
+        `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&appid=9aa75d5e7ba78ba2e3fa668d6e97cf82`.then(
+          (res) => (this.info = res.data)
+        )
+      );
+    },
   },
 };
 </script>
 
-<!-- 21 line: v-on:input="this.city = $event.target.value"
+<!-- 21 line: @input="this.city = $event.target.value"
 or
 v-model="city" -->
 
@@ -27,12 +59,23 @@ v-model="city" -->
       v-on:input="this.city = $event.target.value"
       placeholder="Write the name"
     />
-    <button v-if="city != ''">Go!</button>
+    <button v-if="city != ''" v-on:click="getWeather()">Go!</button>
     <button disabled v-else>Enter name</button>
+    <p class="error">{{ this.error }}</p>
+    <div v-if="info != null">
+      <p>{{ showTemp }}</p>
+      <p>{{ showFeelsLike }}</p>
+      <p>{{ showMinTemp }}</p>
+      <p>{{ showMaxTemp }}</p>
+    </div>
   </div>
 </template>
 
 <style scoped>
+.error {
+  color: red;
+}
+
 .wrapper {
   width: 900px;
   height: 500px;
