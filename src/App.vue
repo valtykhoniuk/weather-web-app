@@ -5,19 +5,30 @@ export default {
       city: "",
     };
   },
+
+  computed: {
+    cityName() {
+      return "«" + this.city + "»";
+    },
+  },
 };
 </script>
+
+<!-- 21 line: v-on:input="this.city = $event.target.value"
+or
+v-model="city" -->
 
 <template>
   <div class="wrapper">
     <h1>Weather app</h1>
-    <p>Get known weather in {{ city }}</p>
+    <p>Get known weather in {{ city == "" ? "your city" : cityName }}</p>
     <input
       type="text"
       v-on:input="this.city = $event.target.value"
       placeholder="Write the name"
     />
-    <button>Go!</button>
+    <button v-if="city != ''">Go!</button>
+    <button disabled v-else>Enter name</button>
   </div>
 </template>
 
@@ -62,6 +73,10 @@ export default {
   margin-left: 20px;
   cursor: pointer;
   transition: transform 500ms ease;
+}
+
+.wrapper button:disabled {
+  background-color: rgb(219, 219, 219);
 }
 
 .wrapper button:hover {
